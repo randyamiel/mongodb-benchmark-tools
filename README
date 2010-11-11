@@ -1,0 +1,115 @@
+Some simple tools for benchmarking usagage of MongoDB.
+
+To build, run ant dist.  This will create a dist folder with all the dependencies.  If you can't compile,
+run this:
+
+ant -f install-ivy.xml
+
+This will install the ivy plug-in for ant, which will take care of all the project dependencies.
+
+*** Object Mapping benchmark ***
+
+Sure, querying mongo is easy but what's the best way to convert the JSON into java objects?  Turns out it
+depends on a couple things.  Here's general recommendation.
+
+* The fastest mechansim is to work with the DBObject yourself, and populate your java objects manually
+* You should tell the driver to NOT project objects that you're not going to use.
+* Morphia is a little bit faster than Jackson.
+
+This benchmark will create data in the following structure:
+
+TestObject
+  - str_value
+  - long_value
+  + users
+    - first_name
+    - last_name
+    - email
+    - ip_address
+    + activity
+      - login_count
+      - referrer
+
+It uses a handy-dandy RandomDataUtil for populating data in the objects.
+
+The tool will create data in the database/collection that you specify.  For instance:
+
+./bin/run.sh org.eatbacon.mongodb.benchmark.TestSuite -h localhost -c test1 -d test -l 100000 -S 1000000
+
+Will run the TestSuite.  It'll ensure that there are 1M records in the tes1 collection under mongo 
+database localhost/test.  When running, it'll query 100,000 records for each pass.  You'll get a response like
+this:
+
+LOOP 1---------------------------------
+test_name,total_objects,rate (req/sec),throughput (mb/s)
+RawBenchmark:full, objects: 100000, rate: 2778.78, throughput: 20.28 mb/sec
+RawBenchmark:one-level, objects: 100000, rate: 14084.51, throughput: 10.14 mb/sec
+RawBenchmark:top-level, objects: 100000, rate: 132100.4, throughput: 11.44 mb/sec
+ManualBenchmark:full, objects: 100000, rate: 2616.84, throughput: 19.09 mb/sec
+ManualBenchmark:one-level, objects: 100000, rate: 13974.29, throughput: 10.06 mb/sec
+ManualBenchmark:top-level, objects: 100000, rate: 133689.84, throughput: 11.57 mb/sec
+JacksonBenchmark:full, objects: 100000, rate: 1742.55, throughput: 12.71 mb/sec
+JacksonBenchmark:one-level, objects: 100000, rate: 10439.5, throughput: 7.52 mb/sec
+JacksonBenchmark:top-level, objects: 100000, rate: 89206.07, throughput: 7.72 mb/sec
+Nov 11, 2010 8:19:52 PM com.google.code.morphia.logging.MorphiaLoggerFactory chooseLoggerFactory
+INFO: LoggerImplFactory set to com.google.code.morphia.logging.jdk.JDKLoggerFactory
+MorphiaBenchmark:full, objects: 100000, rate: 2132.33, throughput: 15.56 mb/sec
+MorphiaBenchmark:one-level, objects: 100000, rate: 11044.84, throughput: 7.95 mb/sec
+MorphiaBenchmark:top-level, objects: 100000, rate: 89847.26, throughput: 7.78 mb/sec
+LOOP 2---------------------------------
+test_name,total_objects,rate (req/sec),throughput (mb/s)
+RawBenchmark:full, objects: 100000, rate: 2780.87, throughput: 20.29 mb/sec
+RawBenchmark:one-level, objects: 100000, rate: 14660.61, throughput: 10.56 mb/sec
+RawBenchmark:top-level, objects: 100000, rate: 129533.68, throughput: 11.21 mb/sec
+ManualBenchmark:full, objects: 100000, rate: 2692.88, throughput: 19.65 mb/sec
+ManualBenchmark:one-level, objects: 100000, rate: 14297.97, throughput: 10.3 mb/sec
+ManualBenchmark:top-level, objects: 100000, rate: 141643.06, throughput: 12.26 mb/sec
+JacksonBenchmark:full, objects: 100000, rate: 1867.55, throughput: 13.63 mb/sec
+JacksonBenchmark:one-level, objects: 100000, rate: 11002.31, throughput: 7.92 mb/sec
+JacksonBenchmark:top-level, objects: 100000, rate: 89686.1, throughput: 7.76 mb/sec
+MorphiaBenchmark:full, objects: 100000, rate: 2083.46, throughput: 15.2 mb/sec
+MorphiaBenchmark:one-level, objects: 100000, rate: 10820.17, throughput: 7.79 mb/sec
+MorphiaBenchmark:top-level, objects: 100000, rate: 89525.51, throughput: 7.75 mb/sec
+LOOP 3---------------------------------
+test_name,total_objects,rate (req/sec),throughput (mb/s)
+RawBenchmark:full, objects: 100000, rate: 2755.5, throughput: 20.11 mb/sec
+RawBenchmark:one-level, objects: 100000, rate: 14609.2, throughput: 10.52 mb/sec
+RawBenchmark:top-level, objects: 100000, rate: 133333.33, throughput: 11.54 mb/sec
+ManualBenchmark:full, objects: 100000, rate: 2794.78, throughput: 20.39 mb/sec
+ManualBenchmark:one-level, objects: 100000, rate: 16210.08, throughput: 11.67 mb/sec
+ManualBenchmark:top-level, objects: 100000, rate: 142045.45, throughput: 12.3 mb/sec
+JacksonBenchmark:full, objects: 100000, rate: 1827.15, throughput: 13.33 mb/sec
+JacksonBenchmark:one-level, objects: 100000, rate: 10905.13, throughput: 7.85 mb/sec
+JacksonBenchmark:top-level, objects: 100000, rate: 89605.73, throughput: 7.76 mb/sec
+MorphiaBenchmark:full, objects: 100000, rate: 2185.55, throughput: 15.95 mb/sec
+MorphiaBenchmark:one-level, objects: 100000, rate: 11200.72, throughput: 8.07 mb/sec
+MorphiaBenchmark:top-level, objects: 100000, rate: 91157.7, throughput: 7.89 mb/sec
+LOOP 4---------------------------------
+test_name,total_objects,rate (req/sec),throughput (mb/s)
+RawBenchmark:full, objects: 100000, rate: 2755.66, throughput: 20.11 mb/sec
+RawBenchmark:one-level, objects: 100000, rate: 14314.34, throughput: 10.31 mb/sec
+RawBenchmark:top-level, objects: 100000, rate: 137551.58, throughput: 11.91 mb/sec
+ManualBenchmark:full, objects: 100000, rate: 2688.82, throughput: 19.62 mb/sec
+ManualBenchmark:one-level, objects: 100000, rate: 15713.39, throughput: 11.32 mb/sec
+ManualBenchmark:top-level, objects: 100000, rate: 141843.97, throughput: 12.28 mb/sec
+JacksonBenchmark:full, objects: 100000, rate: 1875.72, throughput: 13.69 mb/sec
+JacksonBenchmark:one-level, objects: 100000, rate: 11013.22, throughput: 7.93 mb/sec
+JacksonBenchmark:top-level, objects: 100000, rate: 90009, throughput: 7.79 mb/sec
+MorphiaBenchmark:full, objects: 100000, rate: 2052.08, throughput: 14.97 mb/sec
+MorphiaBenchmark:one-level, objects: 100000, rate: 11082.79, throughput: 7.98 mb/sec
+MorphiaBenchmark:top-level, objects: 100000, rate: 91407.68, throughput: 7.91 mb/sec
+LOOP 5---------------------------------
+test_name,total_objects,rate (req/sec),throughput (mb/s)
+RawBenchmark:full, objects: 100000, rate: 2851.85, throughput: 20.81 mb/sec
+RawBenchmark:one-level, objects: 100000, rate: 14690.76, throughput: 10.58 mb/sec
+RawBenchmark:top-level, objects: 100000, rate: 138696.26, throughput: 12.01 mb/sec
+ManualBenchmark:full, objects: 100000, rate: 2675.37, throughput: 19.52 mb/sec
+ManualBenchmark:one-level, objects: 100000, rate: 14867.68, throughput: 10.71 mb/sec
+ManualBenchmark:top-level, objects: 100000, rate: 141843.97, throughput: 12.28 mb/sec
+JacksonBenchmark:full, objects: 100000, rate: 1850.69, throughput: 13.5 mb/sec
+JacksonBenchmark:one-level, objects: 100000, rate: 10660.98, throughput: 7.68 mb/sec
+JacksonBenchmark:top-level, objects: 100000, rate: 89928.06, throughput: 7.78 mb/sec
+MorphiaBenchmark:full, objects: 100000, rate: 2113, throughput: 15.42 mb/sec
+MorphiaBenchmark:one-level, objects: 100000, rate: 11309.66, throughput: 8.14 mb/sec
+MorphiaBenchmark:top-level, objects: 100000, rate: 91407.68, throughput: 7.91 mb/sec
+ 

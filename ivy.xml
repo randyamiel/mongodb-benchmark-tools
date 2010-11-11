@@ -9,8 +9,8 @@
 		<dependency org="org.mongodb" name="mongo-java-driver" rev="2.1" conf="build->default"/>
 
 		<!-- jackson support -->
-		<dependency org="org.codehaus.jackson" name="jackson-jaxrs" rev="1.4.3" conf="build->default"/>
-		<dependency org="org.codehaus.jackson" name="jackson-xc" rev="1.4.3" conf="build->default"/>
-		<dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.4.3" conf="build->default"/>
+		<dependency org="org.codehaus.jackson" name="jackson-jaxrs" rev="1.6.2" conf="build->default"/>
+		<dependency org="org.codehaus.jackson" name="jackson-xc" rev="1.6.2" conf="build->default"/>
+		<dependency org="org.codehaus.jackson" name="jackson-mapper-asl" rev="1.6.2" conf="build->default"/>
     </dependencies>
 </ivy-module>
