@@ -13,8 +13,8 @@ import com.mongodb.DBObject;
 public class JacksonBenchmark extends RawBenchmark {
 	private static ObjectMapper JACKSON_MAPPER;
 
-	public static void main(String ... args){
-		if(!parseArgs(args)){
+	public static void main(String... args) {
+		if (!parseArgs(args)) {
 			usage();
 			return;
 		}
@@ -23,36 +23,38 @@ public class JacksonBenchmark extends RawBenchmark {
 		try {
 			b.getMapper();
 			b.run();
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
 	@Override
-	public void deserialize(DBObject obj){
-		try{
+	public void deserialize(DBObject obj) {
+		try {
 			getMapper().readValue(obj.toString(), TestObject.class);
-		}
-		catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	public ObjectMapper getMapper(){
-    	if(JACKSON_MAPPER == null){
+	public ObjectMapper getMapper() {
+		if (JACKSON_MAPPER == null) {
 			AnnotationIntrospector jackson = new JacksonAnnotationIntrospector();
 			AnnotationIntrospector jaxb = new JaxbAnnotationIntrospector();
-			AnnotationIntrospector pair = new AnnotationIntrospector.Pair(jaxb, jackson);
+			AnnotationIntrospector pair = new AnnotationIntrospector.Pair(jaxb,
+					jackson);
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.getSerializationConfig().setAnnotationIntrospector(jaxb);
 			mapper.getDeserializationConfig().setAnnotationIntrospector(pair);
-			mapper.getDeserializationConfig().set(Feature.AUTO_DETECT_SETTERS, true);
+			mapper.getDeserializationConfig().set(Feature.AUTO_DETECT_SETTERS,
+					true);
 			mapper.configure(Feature.AUTO_DETECT_SETTERS, true);
 			mapper.configure(Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-			mapper.configure(SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS, false);
+			mapper.configure(
+					SerializationConfig.Feature.WRITE_DATES_AS_TIMESTAMPS,
+					false);
 			JACKSON_MAPPER = mapper;
-    	}
-    	return JACKSON_MAPPER;
+		}
+		return JACKSON_MAPPER;
 	}
 }

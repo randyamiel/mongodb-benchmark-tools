@@ -8,7 +8,7 @@ public class TestSuite {
 			RawBenchmark.main(args);
 			ManualBenchmark.main(args);
 			JacksonBenchmark.main(args);
-			MorphiaBenchmark.main(args);
+//			MorphiaBenchmark.main(args);
 		}
 	}
 }
