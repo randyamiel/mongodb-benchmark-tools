@@ -42,6 +42,13 @@ abstract class BaseBenchmark {
       case "true" => validateData(config("totalRecords").toInt)
       case _ =>
     }
+    config.getOrElse("totalRecords", {
+      getDb().getCollection(getCollectionName()).find().count() match {
+        case c: Int => config += "totalRecords" -> c.toString
+        case _ => config += "totalRecords" -> "0"
+      }
+      println("set totalRecords from DB to " + config("totalRecords"))
+    })
   }
 
   def getCollectionName() = config("collection")
