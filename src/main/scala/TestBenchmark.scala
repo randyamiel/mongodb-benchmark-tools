@@ -10,9 +10,9 @@ object TestBenchmark extends BaseBenchmark {
     parseArgs(args)
 
     config("testType") match {
-      case "sequential" => runSequential(config("limit").toInt)
-      case "random" => runRandom(config("limit").toInt)
-      case "update" => runUpdate(config("limit").toInt)
+      case "sequential" => runSequential(config("limit").toInt, config("totalRecords").toInt)
+      case "random" => runRandom(config("limit").toInt, config("totalRecords").toInt)
+      case "update" => runUpdate(config("limit").toInt, config("totalRecords").toInt)
     }
 
     val str = ProfileScreenPrinter.toString

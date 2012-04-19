@@ -60,7 +60,7 @@ abstract class BaseBenchmark {
 
   def deserialize(obj: DBObject)
 
-  def runSequential(limit: Int) = {
+  def runSequential(limit: Int, maxRecords: Int) = {
     Profile("sequential full-object", {
       val pu = new ProgressUtil
       var charsRead = 0
@@ -116,7 +116,7 @@ abstract class BaseBenchmark {
     })
   }
 
-  def runUpdate(limit: Int) = {
+  def runUpdate(limit: Int, maxRecords: Int) = {
     Profile("random full-object", {
       val pu = new ProgressUtil
       var charsRead = 0
@@ -127,7 +127,7 @@ abstract class BaseBenchmark {
       while (!done) {
         count += 1
         pu.update("update objects", count, limit)
-        val id = RandomDataUtil.getRandomInt(0, limit - 1)
+        val id = RandomDataUtil.getRandomInt(0, maxId - 1)
         coll.findOne(new BasicDBObject("_id", id.toLong)) match {
           case dbo: DBObject => {
             dbo.put("strval", RandomDataUtil.getRandomAlphaString(24))
@@ -144,7 +144,7 @@ abstract class BaseBenchmark {
     })
   }
 
-  def runRandom(limit: Int) = {
+  def runRandom(limit: Int, maxRecords: Int) = {
     Profile("random full-object", {
       val pu = new ProgressUtil
       var charsRead = 0
@@ -154,7 +154,7 @@ abstract class BaseBenchmark {
       while (!done) {
         count += 1
         pu.update("random full objects", count, limit)
-        val id = RandomDataUtil.getRandomInt(0, limit - 1)
+        val id = RandomDataUtil.getRandomInt(0, maxRecords - 1)
         val obj = coll.findOne(new BasicDBObject("_id", id.toLong))
         charsRead += obj.toString().length()
         deserialize(obj)
@@ -173,7 +173,7 @@ abstract class BaseBenchmark {
       while (!done) {
         count += 1
         pu.update("random one-level", count, limit)
-        val id = RandomDataUtil.getRandomInt(0, limit - 1)
+        val id = RandomDataUtil.getRandomInt(0, maxRecords - 1)
         val obj = coll.findOne(new BasicDBObject("_id", id.toLong), new BasicDBObject("users.activity", 0))
         charsRead += obj.toString().length()
         deserialize(obj)
@@ -192,7 +192,7 @@ abstract class BaseBenchmark {
       while (!done) {
         count += 1
         pu.update("random top-level", count, limit)
-        val id = RandomDataUtil.getRandomInt(0, limit - 1)
+        val id = RandomDataUtil.getRandomInt(0, maxRecords - 1)
         val obj = coll.findOne(new BasicDBObject("_id", id.toLong), new BasicDBObject("users", 0))
         charsRead += obj.toString().length()
         deserialize(obj)
