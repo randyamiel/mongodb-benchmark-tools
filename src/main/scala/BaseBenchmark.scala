@@ -127,7 +127,7 @@ abstract class BaseBenchmark {
       while (!done) {
         count += 1
         pu.update("update objects", count, limit)
-        val id = RandomDataUtil.getRandomInt(0, maxId - 1)
+        val id = RandomDataUtil.getRandomInt(0, maxRecords - 1)
         coll.findOne(new BasicDBObject("_id", id.toLong)) match {
           case dbo: DBObject => {
             dbo.put("strval", RandomDataUtil.getRandomAlphaString(24))
