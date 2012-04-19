@@ -32,6 +32,7 @@ abstract class BaseBenchmark {
         case "-S" => i += 1; config += "totalRecords" -> args(i)
         case "-l" => i += 1; config += "limit" -> args(i)
         case "-t" => i += 1; config += "testType" -> args(i)
+        case "-o" => i += 1; config += "outputFile" -> args(i)
         case "-v" => config += "validateData" -> "true"
         case a: String => println("invalid argument " + a); exit(0)
       }
