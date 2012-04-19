@@ -12,6 +12,7 @@ object TestBenchmark extends BaseBenchmark {
     config("testType") match {
       case "sequential" => runSequential(config("limit").toInt)
       case "random" => runRandom(config("limit").toInt)
+      case "update" => runUpdate(config("limit").toInt)
     }
 
     val str = ProfileScreenPrinter.toString

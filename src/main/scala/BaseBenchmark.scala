@@ -116,6 +116,34 @@ abstract class BaseBenchmark {
     })
   }
 
+  def runUpdate(limit: Int) = {
+    Profile("random full-object", {
+      val pu = new ProgressUtil
+      var charsRead = 0
+      val db = getDb()
+      val coll = db.getCollection(getCollectionName())
+      var count = 0
+      var done = false
+      while (!done) {
+        count += 1
+        pu.update("update objects", count, limit)
+        val id = RandomDataUtil.getRandomInt(0, limit - 1)
+        coll.findOne(new BasicDBObject("_id", id.toLong)) match {
+          case dbo: DBObject => {
+            dbo.put("strval", RandomDataUtil.getRandomAlphaString(24))
+            dbo.put("long_val", RandomDataUtil.getRandomLong())
+            coll.save(dbo)
+            db.getLastError
+          }
+          case _ =>
+        }
+        if (count >= limit) done = true
+      }
+      pu.finish("update random", count)
+      count
+    })
+  }
+
   def runRandom(limit: Int) = {
     Profile("random full-object", {
       val pu = new ProgressUtil
