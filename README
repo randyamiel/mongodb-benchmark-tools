@@ -1,11 +1,9 @@
 Some simple tools for benchmarking usagage of MongoDB.
 
-To build, run ant dist.  This will create a dist folder with all the dependencies.  If you can't compile,
+To build, run mvn package.  This will create a dist folder with all the dependencies.  If you can't compile,
 run this:
 
-ant -f install-ivy.xml
-
-This will install the ivy plug-in for ant, which will take care of all the project dependencies.
+mvn package
 
 *** Object Mapping benchmark ***
 
